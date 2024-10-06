@@ -5,13 +5,17 @@
 #define PI 3.14159265358979323846
 
 // Stepper motor configuration for 5 joints
+// purple is enable
+// dir is gray
+// pull is white
+
 // Base Joint
 #define BASE_ENA_PIN 2
 #define BASE_DIR_PIN 4
 #define BASE_PUL_PIN 16
 #define BASE_MOTOR_STEPS_PER_REV 1600
 #define BASE_GEAR_RATIO 1.0
-#define BASE_MIN_LIMIT 0.0 // rad
+#define BASE_MIN_LIMIT -6.28345 // rad
 #define BASE_MAX_LIMIT 6.28345 // rad
 
 // Shoulder Joint (two motors)
@@ -60,9 +64,8 @@
 #define I2C_SCL_PIN 22
 
 // Motor direction configuration
-#define BASE_DIRECTION -1
-#define SHOULDER_DIRECTION_1 1
-#define SHOULDER_DIRECTION_2 1
+#define BASE_DIRECTION 1
+#define SHOULDER_DIRECTION 1
 #define ELBOW_DIRECTION 1
 #define WRIST_PITCH_DIRECTION 1
 #define WRIST_ROLL_DIRECTION 1

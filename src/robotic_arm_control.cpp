@@ -53,7 +53,6 @@ void IRAM_ATTR onMotorTimer(void* arg) {
 
 void stepMotorTask(void * parameter) {
     Arm_t *arm = (Arm_t *)parameter;
-    int counter = 0;
 
     for(;;) {
         if(xSemaphoreTake(StepMotorSemaphore, portMAX_DELAY)) {
@@ -69,7 +68,6 @@ void stepMotorTask(void * parameter) {
             move_joint_to_position(&arm->third_joint);
             move_joint_to_position(&arm->fourth_joint);
             move_joint_to_position(&arm->fifth_joint);
-            counter++;
         }
     }
 }
@@ -82,6 +80,8 @@ void communicationTask(void * parameter) {
 
     for(;;) {
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
+        Serial.println(arm->base_joint.current_position);
 
         // Check if data is available
         if (Serial.available() >= SIZE_OF_RX_DATA) {
@@ -126,13 +126,6 @@ void setup() {
     init_profile(&wrist_pitch_profile, 1.4, 0.3 , 0.1);
     init_profile(&wrist_roll_profile, 1.4, 0.3 , 0.1);
 
-    // Initialize joints
-
-#define BASE_DIRECTION -1
-#define SHOULDER_DIRECTION 1
-#define ELBOW_DIRECTION 1
-#define WRIST_PITCH_DIRECTION 1
-#define WRIST_ROLL_DIRECTION 1
 
     init_joint(&base_joint, &base_motor, &base_profile, BASE_GEAR_RATIO, BASE_MIN_LIMIT , BASE_MAX_LIMIT, BASE_DIRECTION);
     init_joint(&second_joint, &shoulder_motor_1, &shoulder_profile, SHOULDER_GEAR_RATIO, SHOULDER_MIN_LIMIT , SHOULDER_MAX_LIMIT, SHOULDER_DIRECTION);
@@ -183,6 +176,8 @@ void setup() {
         Serial.println("CommunicationTask creation success!");
     }
 
+    arm.base_joint.desired_position = -6.283185; //rad
+
     // Motor timer for stepMotorTask (2000 Hz)
     const esp_timer_create_args_t motor_timer_args = {
         .callback = &onMotorTimer,
@@ -191,7 +186,7 @@ void setup() {
     };
     esp_timer_create(&motor_timer_args, &motor_timer);
     esp_timer_start_periodic(motor_timer, 333); // 2000 Hz
-    arm.base_joint.desired_position = -6.283185; //rad
+    
     // arm.second_joint.desired_position = 5.0; //rad
     // arm.third_joint.desired_position = 11.0; //rad
     // arm.fourth_joint.desired_position = 0.57; //rad

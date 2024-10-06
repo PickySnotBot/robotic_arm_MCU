@@ -16,7 +16,6 @@ void init_stepper_motor(StepperMotor_t* motor, int ena_pin, int dir_pin, int pul
     motor->last_call_time = micros(); // Initialize last call time
 
     // Set pin modes
-    pinMode(motor->dir_pin, INPUT_PULLDOWN);
     pinMode(motor->ena_pin, OUTPUT);
     pinMode(motor->dir_pin, OUTPUT);
     pinMode(motor->pul_pin, OUTPUT);
